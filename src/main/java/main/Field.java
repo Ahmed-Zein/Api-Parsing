@@ -13,6 +13,9 @@ public class Field {
         this.allowedVals = allowedVals;
         this.mandatory = mandatory;
     }
+    public Field(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return this.name;
