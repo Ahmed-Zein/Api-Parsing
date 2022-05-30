@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.formula.functions.Index;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
@@ -48,8 +49,12 @@ public class ExcelReader {
                             && !cell.getRichStringCellValue().getString().startsWith("I/o")) {
                         String tempFieldName = row.getCell(j).getRichStringCellValue().getString();
                         String[] FieldName = tempFieldName.split("/");
-                        if(FieldName.length < 2){
-                            
+
+                        if (row.getCell(j + 2).getRichStringCellValue().getString().startsWith("object")) {
+                            objectArray.add(new BigObject(row.getCell(j + 1).getRichStringCellValue().getString(),
+                                    cell.getRichStringCellValue().getString()));
+                        } else {
+                            System.out.println("String");
                         }
                     }
                     j += 4;
@@ -58,6 +63,11 @@ public class ExcelReader {
                 }
 
             }
+        }
+
+        for (int i = 0; i < objectArray.size(); i++) {
+            System.out.print(objectArray.get(i).getIo() + "\t");
+            System.out.println(objectArray.get(i).getName());
         }
         // Closing the workbook
         workbook.close();
