@@ -15,9 +15,11 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 public class ExcelReader {
 
     public static final String SAMPLE_XLSX_FILE_PATH = "./Example.xlsx";
-    ArrayList<BigObject> objs = new ArrayList<>();
 
     public static void main(String[] args) throws IOException, InvalidFormatException {
+
+        // collecting all objects here
+        ArrayList<BigObject> objectArray = new ArrayList<>();
 
         // Creating a Workbook from an Excel file
         Workbook workbook = WorkbookFactory.create(new File(SAMPLE_XLSX_FILE_PATH));
@@ -39,11 +41,18 @@ public class ExcelReader {
             final Row row = sheet.getRow(i);
 
             for (int j = 0; j < row.getPhysicalNumberOfCells(); j++) {
-                final Cell cell = row.getCell(j);
+                Cell cell = row.getCell(j);
                 try {
-                    if (cell.getRichStringCellValue().getString().startsWith("I/o"))
-                        /* code here *_" */
-                        System.out.println(cell.getRichStringCellValue().getString());
+                    if ((cell.getRichStringCellValue().getString().startsWith("I") ||
+                            (cell.getRichStringCellValue().getString().startsWith("O")))
+                            && !cell.getRichStringCellValue().getString().startsWith("I/o")) {
+                        String tempFieldName = row.getCell(j).getRichStringCellValue().getString();
+                        String[] FieldName = tempFieldName.split("/");
+                        if(FieldName.length < 2){
+                            
+                        }
+                    }
+                    j += 4;
                 } catch (NullPointerException e) {
                     continue;
                 }
