@@ -2,6 +2,7 @@ package main;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -11,38 +12,44 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
-/**
- * Created by rajeevkumarsingh on 18/12/17.
- */
 public class ExcelReader {
 
     public static final String SAMPLE_XLSX_FILE_PATH = "./Example.xlsx";
+    ArrayList<BigObject> objs = new ArrayList<>();
 
     public static void main(String[] args) throws IOException, InvalidFormatException {
 
-        // Creating a Workbook from an Excel file (.xls or .xlsx)
+        // Creating a Workbook from an Excel file
         Workbook workbook = WorkbookFactory.create(new File(SAMPLE_XLSX_FILE_PATH));
 
         // Retrieving the number of sheets in the Workbook
         System.out.println("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
 
-        // 2. Or you can use a for-each loop
-        System.out.println("Retrieving Sheets using for-each loop");
+        System.out.println("The Sheets in the Excel file : ");
         for (Sheet sheet : workbook) {
-            System.out.println("=> " + sheet.getSheetName());
+            System.out.println("\t -> " + sheet.getSheetName());
         }
 
         // Getting the Sheet at index zero
         Sheet sheet = workbook.getSheetAt(0);
 
-        for (Row row : sheet) {
-            for (Cell cell : row) {
-                if (cell.getRichStringCellValue().getString().startsWith("I/o"))
-                    printCellValue(cell);
-            }
-            System.out.println();
-        }
+        // I/o || Field Name || Type || Allowed Values || Mandatory
+        // 0 || 1 || 2 || 3 || 4
+        for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
+            final Row row = sheet.getRow(i);
 
+            for (int j = 0; j < row.getPhysicalNumberOfCells(); j++) {
+                final Cell cell = row.getCell(j);
+                try {
+                    if (cell.getRichStringCellValue().getString().startsWith("I/o"))
+                        /* code here *_" */
+                        System.out.println(cell.getRichStringCellValue().getString());
+                } catch (NullPointerException e) {
+                    continue;
+                }
+
+            }
+        }
         // Closing the workbook
         workbook.close();
     }
@@ -74,7 +81,4 @@ public class ExcelReader {
 
         System.out.print("\t");
     }
-
-    
-
 }
