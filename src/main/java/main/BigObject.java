@@ -3,7 +3,7 @@ package main;
 import java.util.ArrayList;
 
 public class BigObject {
-    private String name;
+    private String objectName;
     private String io;
     private ArrayList<Field> fields = new ArrayList<Field>();
 
@@ -12,14 +12,15 @@ public class BigObject {
 
     }
 
-    public BigObject(String name, String io) {
-        this.name = name;
+    public BigObject(String objectName, String io) {
+        this.objectName = objectName;
         this.io = io;
     }
 
     // methods
-    public String getName() {
-        return name;
+    
+    public String getObjectName() {
+        return objectName;
     }
 
     public String getIo() {
@@ -49,8 +50,8 @@ public class BigObject {
         this.fields = fields;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setObjectName(String objectName) {
+        this.objectName = objectName;
     }
 
     public void setIo(String io) {
