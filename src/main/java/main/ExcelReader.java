@@ -42,22 +42,36 @@ public class ExcelReader {
                 }
             }
         }
+
+        // mapping fields to objects
+        for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
+            final Row row = sheet.getRow(i);
+            for (int j = 0; (j < row.getPhysicalNumberOfCells()) && row.getCell(j) != null; j++) {
+                Cell cell = row.getCell(j);
+                if ((cell.getRichStringCellValue().getString().equals("I"))
+                        || (cell.getRichStringCellValue().getString().equals("O"))) {
+                    cell = row.getCell(j + 1);
+                    String[] fieldName = cell.getRichStringCellValue().getString().split("/");
+                    String tempFieldName = fieldName[fieldName.length - 1];
+                    String tempObjName = fieldName[fieldName.length - 2];
+                    int objectIndx = getObjectIndx(tempObjName, objectArray);
+                    try {
+                        objectArray.get(objectIndx).addField(new Field(tempFieldName));
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("-1");
+                    }
+                }
+            }
+        }
+
         // prints all the objects we made so far
         for (int i = 0; i < objectArray.size(); i++) {
             System.out.print(objectArray.get(i).getObjectName());
+            for(int j = 0; j < objectArray.get(i).getFields().size();j++){
+                 System.out.print("\t \t"+objectArray.get(i).getField(j).getName());
+             }
             System.out.println("\t" + objectArray.get(i).getIo());
         }
-
-        // testing getObjectIndx() method
-        int testIndx = getObjectIndx("object3", objectArray);
-        try {
-            System.out.print(objectArray.get(testIndx).getObjectName());
-            System.out.println("\t" + objectArray.get(testIndx).getIo());
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("-1");
-        }
-        // end testing
-
         // Closing the workbook
         workbook.close();
     }
@@ -65,7 +79,7 @@ public class ExcelReader {
     // returns the index of the object we will append to
     public static int getObjectIndx(String objName, ArrayList<BigObject> objectArray) {
         for (int i = 0; i < objectArray.size(); i++) {
-            if (objectArray.get(i).getObjectName() == objName)
+            if (objectArray.get(i).getObjectName().equals(objName))
                 return i;
         }
         // return -1 if not found
@@ -130,4 +144,20 @@ public class ExcelReader {
 // System.out.println("The Sheets in the Excel file : ");
 // for (Sheet sheet : workbook) {
 // System.out.println("\t -> " + sheet.getSheetName());
+// }
+
+// // testing getObjectIndx() method
+// int testIndx = getObjectIndx("object3", objectArray);
+// try {
+// System.out.print(objectArray.get(testIndx).getObjectName());
+// System.out.println("\t" + objectArray.get(testIndx).getIo());
+// } catch (IndexOutOfBoundsException e) {
+// System.out.println("-1");
+// }
+// // end testing
+
+// // prints all the objects we made so far
+// for (int i = 0; i < objectArray.size(); i++) {
+// System.out.print(objectArray.get(i).getObjectName());
+// System.out.println("\t" + objectArray.get(i).getIo());
 // }
