@@ -36,6 +36,28 @@ public class ExcelReader {
         // Getting the Sheet at index zero
         Sheet sheet = workbook.getSheetAt(0);
 
+        // get all objects first
+        for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
+            final Row row = sheet.getRow(i);
+            int typeCell_incr = 0;
+            int j = 0;
+            Cell cell;
+            if (typeCell_incr == 0) {
+                for (; j < row.getPhysicalNumberOfCells(); j++) {
+                    cell = row.getCell(j);
+                    if (cell.getRichStringCellValue().getString().startsWith("Type")) {
+                        typeCell_incr = j;
+                        break;
+                    }
+                }
+            } else {
+                for (; typeCell_incr < row.getPhysicalNumberOfCells(); typeCell_incr+=5) {
+                    cell = row.getCell(j);
+                    printCellValue(cell);
+                }
+            }
+        }
+
         // I/o || Field Name || Type || Allowed Values || Mandatory
         // 0 || 1 || 2 || 3 || 4
         for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
@@ -43,26 +65,13 @@ public class ExcelReader {
 
             for (int j = 0; j < row.getPhysicalNumberOfCells(); j++) {
                 Cell cell = row.getCell(j);
-                try {
-                    if ((cell.getRichStringCellValue().getString().startsWith("I") ||
-                            (cell.getRichStringCellValue().getString().startsWith("O")))
-                            && !cell.getRichStringCellValue().getString().startsWith("I/o")) {
-                        String tempFieldName = row.getCell(j).getRichStringCellValue().getString();
-                        String[] FieldName = tempFieldName.split("/");
-
-                        if (row.getCell(j + 2).getRichStringCellValue().getString().startsWith("object")) {
-                            objectArray.add(new BigObject(row.getCell(j + 1).getRichStringCellValue().getString(),
-                                    cell.getRichStringCellValue().getString()));
-                        } else {
-                            System.out.println("String");
-                        }
-                    }
-                    j += 4;
-                } catch (NullPointerException e) {
-                    continue;
+                if (cell != null && cell.getRichStringCellValue().getString().startsWith("/object")) {
+                    String[] FieldNames = cell.getRichStringCellValue().getString().split("/");
+                    int indx = objIndx(FieldNames);
+                    objectArray.add(new BigObject());
                 }
-
             }
+            System.out.println();
         }
 
         for (int i = 0; i < objectArray.size(); i++) {
@@ -71,6 +80,16 @@ public class ExcelReader {
         }
         // Closing the workbook
         workbook.close();
+    }
+
+    // returns the index of the object we will append to
+    public static int objIndx(String[] cellString) {
+        for (int i = 0; i < cellString.length; i++) {
+            if (cellString[1].startsWith("field")) {
+                return i - 1;
+            }
+        }
+        return cellString.length - 1;
     }
 
     private static void printCellValue(Cell cell) {
@@ -101,3 +120,19 @@ public class ExcelReader {
         System.out.print("\t");
     }
 }
+// try {
+// if ((cell.getRichStringCellValue().getString().startsWith("I") ||
+// (cell.getRichStringCellValue().getString().startsWith("O")))
+// && !cell.getRichStringCellValue().getString().startsWith("I/o")) {
+
+// String tempFieldName = row.getCell(j).getRichStringCellValue().getString();
+// String[] FieldName = tempFieldName.split("/");
+
+// } else {
+// System.out.println("String");
+// }
+// j += 4;
+
+// } catch (NullPointerException e) {
+// continue;
+// }
