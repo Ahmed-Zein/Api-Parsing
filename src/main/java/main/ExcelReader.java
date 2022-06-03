@@ -58,7 +58,7 @@ public class ExcelReader {
                     try {
                         objectArray.get(objectIndx).addField(new Field(tempFieldName));
                     } catch (IndexOutOfBoundsException e) {
-                        System.out.println(tempFieldName); 
+                        //System.out.println(tempFieldName); 
                     }
                 }
             }
