@@ -40,43 +40,21 @@ public class ExcelReader {
         for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
             final Row row = sheet.getRow(i);
             int typeCell_incr = 0;
-            int j = 0;
-            Cell cell;
-            if (typeCell_incr == 0) {
-                for (; j < row.getPhysicalNumberOfCells(); j++) {
-                    cell = row.getCell(j);
-                    if (cell.getRichStringCellValue().getString().startsWith("Type")) {
-                        typeCell_incr = j;
-                        break;
+            for (int j = 0; (j < row.getPhysicalNumberOfCells() && typeCell_incr == 0); j++) {
+                Cell cell = row.getCell(j);
+                if ((cell != null) && (cell.getRichStringCellValue().getString().startsWith("I")
+                        || (cell.getRichStringCellValue().getString().startsWith("O")))) {
+                    if (row.getCell(j + 2).getRichStringCellValue().getString().startsWith("object")) {
+                        objectArray.add(new BigObject(row.getCell(j + 2).getRichStringCellValue().getString(),
+                                row.getCell(j).getRichStringCellValue().getString()));
+                        System.out.println();
                     }
                 }
-            } else {
-                for (; typeCell_incr < row.getPhysicalNumberOfCells(); typeCell_incr+=5) {
-                    cell = row.getCell(j);
-                    printCellValue(cell);
-                }
             }
         }
-
-        // I/o || Field Name || Type || Allowed Values || Mandatory
-        // 0 || 1 || 2 || 3 || 4
-        for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
-            final Row row = sheet.getRow(i);
-
-            for (int j = 0; j < row.getPhysicalNumberOfCells(); j++) {
-                Cell cell = row.getCell(j);
-                if (cell != null && cell.getRichStringCellValue().getString().startsWith("/object")) {
-                    String[] FieldNames = cell.getRichStringCellValue().getString().split("/");
-                    int indx = objIndx(FieldNames);
-                    objectArray.add(new BigObject());
-                }
-            }
-            System.out.println();
-        }
-
         for (int i = 0; i < objectArray.size(); i++) {
-            System.out.print(objectArray.get(i).getIo() + "\t");
-            System.out.println(objectArray.get(i).getName());
+            System.out.print(objectArray.get(i).getName());
+            System.out.println("\t" + objectArray.get(i).getIo());
         }
         // Closing the workbook
         workbook.close();
@@ -135,4 +113,26 @@ public class ExcelReader {
 
 // } catch (NullPointerException e) {
 // continue;
+// }
+
+// I/o || Field Name || Type || Allowed Values || Mandatory
+// // 0 || 1 || 2 || 3 || 4
+// for (int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
+// final Row row = sheet.getRow(i);
+
+// for (int j = 0; j < row.getPhysicalNumberOfCells(); j++) {
+// Cell cell = row.getCell(j);
+// if (cell != null &&
+// cell.getRichStringCellValue().getString().startsWith("/object")) {
+// String[] FieldNames = cell.getRichStringCellValue().getString().split("/");
+// int indx = objIndx(FieldNames);
+// objectArray.add(new BigObject());
+// }
+// }
+// System.out.println();
+// }
+
+// for (int i = 0; i < objectArray.size(); i++) {
+// System.out.print(objectArray.get(i).getIo() + "\t");
+// System.out.println(objectArray.get(i).getName());
 // }
