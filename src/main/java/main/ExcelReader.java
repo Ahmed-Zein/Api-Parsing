@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 public class ExcelReader {
 
     public static final String EXCEL_FILE = "./Example.xlsx";
+
     public static void main(String[] args) throws IOException, InvalidFormatException {
         // collecting all objects here
         ArrayList<BigObject> objectArray = new ArrayList<>();
@@ -50,11 +51,19 @@ public class ExcelReader {
                     String[] fieldName = cell.getRichStringCellValue().getString().split("/");
                     String tempFieldName = fieldName[fieldName.length - 1];
                     String tempObjName = fieldName[fieldName.length - 2];
+                    String tempType = row.getCell(j + 2).getRichStringCellValue().getString();
+                    String tempAllowedVals = row.getCell(j + 3).getRichStringCellValue().getString();
+                    String tempMandatory = row.getCell(j + 4).getRichStringCellValue().getString();
                     int objectIndx = getObjectIndx(tempObjName, objectArray);
+                    if (row.getCell(j + 3).getRichStringCellValue().getString().equals(""))
+                        tempAllowedVals = "-1";
                     try {
-                        objectArray.get(objectIndx).addField(new Field(tempFieldName));
+                        objectArray.get(objectIndx)
+                                .addField(new Field(tempFieldName, tempType, tempAllowedVals, tempMandatory));
                     } catch (IndexOutOfBoundsException e) {
-                        // System.out.println(tempFieldName);
+                        if (tempFieldName.startsWith("field"))
+                            objectArray.add(new BigObject(tempFieldName,
+                                    row.getCell(j + 2).getRichStringCellValue().getString()));
                     }
                 }
             }
@@ -64,7 +73,10 @@ public class ExcelReader {
         for (int i = 0; i < objectArray.size(); i++) {
             System.out.print(objectArray.get(i).getObjectName());
             for (int j = 0; j < objectArray.get(i).getFields().size(); j++) {
-                System.out.print("\t \t" + objectArray.get(i).getField(j).getName());
+                System.out.print("\t \t" + objectArray.get(i).getField(j).getFieldName());
+                System.out.print("\t \t" + objectArray.get(i).getField(j).getType());
+                System.out.print("\t \t" + objectArray.get(i).getField(j).getAllowedVals());
+                System.out.print("\t \t" + objectArray.get(i).getField(j).getMandatory());
             }
             System.out.println("\t \t" + objectArray.get(i).getIo());
         }

@@ -74,7 +74,7 @@ public class mainUI extends Application {
                 GridPane tempGrid = new GridPane();
                 
                 //add Try-Catch to check if the item is an BigObject or Field
-                tempGrid.add(new Label(obs.get(j).getFields().get(i).getName()), i, 0);
+                tempGrid.add(new Label(obs.get(j).getFields().get(i).getFieldName()), i, 0);
                 tempGrid.add(new Label(obs.get(j).getFields().get(i).getType()), i, 1);
                 tempGrid.add(new Label(obs.get(j).getFields().get(i).getAllowedVals()), i, 2);
                 tempGrid.add(new Label(obs.get(j).getFields().get(i).getMandatory()), i, 3);
