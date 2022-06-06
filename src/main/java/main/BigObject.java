@@ -18,7 +18,12 @@ public class BigObject {
     }
 
     // methods
-    
+
+    public void addField(Field f) {
+        fields.add(f);
+
+    }
+
     public String getObjectName() {
         return objectName;
     }
@@ -28,26 +33,17 @@ public class BigObject {
     }
 
     /**
-     * @return array of the field and obj contained in this object
+     * @return array of ALL the field and obj contained in this object
      */
     public ArrayList<Field> getFields() {
         return fields;
     }
 
     /**
-     * @return array of the field or obj at indx i
+     * @return array of a field at indx i
      */
     public Field getField(int indx) {
         return fields.get(indx);
-    }
-
-    public void addField(Field f) {
-        fields.add(f);
-
-    }
-
-    public void setFields(ArrayList<Field> fields) {
-        this.fields = fields;
     }
 
     public void setObjectName(String objectName) {
@@ -56,5 +52,10 @@ public class BigObject {
 
     public void setIo(String io) {
         this.io = io;
+    }
+
+    @Override
+    public String toString() {
+        return "BigObject [Number of fields=" + fields.size() + ", io=" + io + ", objectName=" + objectName + "]";
     }
 }
